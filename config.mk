@@ -153,7 +153,7 @@ PYTHON_FUELCLIENT_COMMIT?=master
 ASTUTE_COMMIT?=master
 OSTF_COMMIT?=master
 
-FUELLIB_REPO?=https://github.com/stackforge/fuel-library.git
+FUELLIB_REPO?=https://github.com/tascel/fuel-library.git
 NAILGUN_REPO?=https://github.com/stackforge/fuel-web.git
 PYTHON_FUELCLIENT_REPO?=https://github.com/stackforge/python-fuelclient.git
 ASTUTE_REPO?=https://github.com/stackforge/fuel-astute.git

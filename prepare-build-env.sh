@@ -102,7 +102,7 @@ else
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
   # Install docker
   sudo apt-get update
-  sudo apt-get -y install lxc-docker-1.3.2
+  sudo apt-get -y install lxc-docker-1.5.0
 fi
 
 # Install software
@@ -111,7 +111,7 @@ sudo apt-get -y install build-essential make git $GEMPKG debootstrap createrepo 
   python-setuptools yum yum-utils libmysqlclient-dev isomd5sum bc \
   python-nose libvirt-bin python-ipaddr python-paramiko python-yaml \
   python-pip kpartx extlinux unzip genisoimage syslinux debmirror \
-  lrzip python-daemon python-dev
+  lrzip python-daemon python-dev libparse-debcontrol-perl reprepro
 sudo gem install bundler -v 1.2.1
 sudo gem install builder
 sudo pip install xmlbuilder jinja2 pbr

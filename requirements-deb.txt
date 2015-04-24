@@ -90,7 +90,6 @@ mongodb-clients
 mongodb-server
 monit
 murano
-murano-apps
 murano-dashboard
 mysql-client
 mysql-server-wsrep-5.6
@@ -171,6 +170,8 @@ python-ethtool
 python-feedparser
 python-gflags
 python-glance
+python-gobject
+python-gobject-2
 python-heatclient
 python-keyring
 python-keystone
@@ -188,7 +189,6 @@ python-openstack-auth
 python-openstackclient
 python-passlib
 python-pastescript
-python-pcs
 python-pexpect
 python-pycurl
 python-pylibmc

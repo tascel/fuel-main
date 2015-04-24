@@ -130,6 +130,7 @@ ql2200-firmware
 ql23xx-firmware
 ql2400-firmware
 ql2500-firmware
+megaraid_sas
 bind-utils
 cronie
 crontabs
@@ -154,6 +155,7 @@ vim
 wget
 yum
 yum-utils
+yum-plugin-priorities
 perl
 daemonize
 rsync

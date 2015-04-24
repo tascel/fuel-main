@@ -38,6 +38,7 @@ CURRENT_VERSION:=$(PRODUCT_VERSION)
 # If it is set then diff $(BASE_VERSION)->$(CURRENT_VERSION)
 BASE_VERSION:=6.0
 
+PACKAGE_VERSION=6.1.0
 # UPGRADE_VERSIONS?=\
 #	6.0:5.1 \
 #	5.1 \
@@ -63,9 +64,7 @@ BASE_VERSION:=6.0
 # available as an artifact from a previous build job.
 #
 UPGRADE_VERSIONS?=\
-	$(CURRENT_VERSION):$(BASE_VERSION) \
-	5.1.1:5.1 \
-	5.0.2
+	$(CURRENT_VERSION)
 
 # Path to pre-built artifacts
 DEPS_DIR_CURRENT?=$(DEPS_DIR)/$(CURRENT_VERSION)
@@ -196,6 +195,7 @@ MIRROR_UBUNTU_METHOD?=http
 MIRROR_UBUNTU_SECTION?=main,restricted
 MIRROR_DOCKER?=$(MIRROR_BASE)/docker
 MIRROR_CENTOS_KERNEL?=$(MIRROR_CENTOS)
+SANDBOX_MIRROR_CENTOS_UPSTREAM?=http://vault.centos.org/$(CENTOS_RELEASE)
 endif
 ifeq ($(USE_MIRROR),srt)
 YUM_REPOS?=proprietary
@@ -230,6 +230,35 @@ MIRROR_UBUNTU_SECTION?=main,restricted
 MIRROR_DOCKER?=$(MIRROR_BASE)/docker
 MIRROR_CENTOS_KERNEL?=$(MIRROR_CENTOS)
 endif
+ifeq ($(USE_MIRROR),usa)
+YUM_REPOS?=proprietary
+MIRROR_BASE?=http://mirror.seed-us1.fuel-infra.org/fwm/$(PRODUCT_VERSION)
+MIRROR_CENTOS?=$(MIRROR_BASE)/centos
+MIRROR_UBUNTU?=mirror.seed-us1.fuel-infra.org
+MIRROR_UBUNTU_ROOT?=/$(PRODUCT_NAME)/ubuntu/
+MIRROR_UBUNTU_METHOD?=http
+MIRROR_UBUNTU_SECTION?=main,restricted
+MIRROR_DOCKER?=$(MIRROR_BASE)/docker
+MIRROR_CENTOS_KERNEL?=$(MIRROR_CENTOS)
+endif
+ifeq ($(USE_MIRROR),cz)
+YUM_REPOS?=proprietary
+MIRROR_BASE?=http://mirror.seed-cz1.fuel-infra.org/fwm/$(PRODUCT_VERSION)
+MIRROR_CENTOS?=$(MIRROR_BASE)/centos
+MIRROR_UBUNTU?=mirror.seed-cz1.fuel-infra.org
+MIRROR_UBUNTU_ROOT?=/$(PRODUCT_NAME)/ubuntu/
+MIRROR_UBUNTU_METHOD?=http
+MIRROR_UBUNTU_SECTION?=main,restricted
+MIRROR_DOCKER?=$(MIRROR_BASE)/docker
+MIRROR_CENTOS_KERNEL?=$(MIRROR_CENTOS)
+endif
+
+
+#This suffix is used to generate path
+#to ubuntu mirror inside mirror
+#DocumentRoot
+
+MIRROR_UBUNTU_SUFFIX?=/pkgs/ubuntu
 
 YUM_DOWNLOAD_SRC?=
 
@@ -237,8 +266,11 @@ MIRROR_CENTOS?=http://mirrors-local-msk.msk.mirantis.net/centos-$(PRODUCT_VERSIO
 MIRROR_CENTOS_KERNEL?=http://mirror.centos.org/centos-6/6.6/
 MIRROR_CENTOS_OS_BASEURL:=$(MIRROR_CENTOS)/os/$(CENTOS_ARCH)
 MIRROR_CENTOS_KERNEL_BASEURL?=$(MIRROR_CENTOS_KERNEL)/os/$(CENTOS_ARCH)
-MIRROR_UBUNTU?=http://osci-mirror-msk.msk.mirantis.net/pkgs/ubuntu/
+MIRROR_UBUNTU?=osci-mirror-msk.msk.mirantis.net
 MIRROR_UBUNTU_OS_BASEURL:=$(MIRROR_UBUNTU)
+MIRROR_UBUNTU_METHOD?=http
+MIRROR_UBUNTU_ROOT?=/$(PRODUCT_NAME)/ubuntu/
+MIRROR_UBUNTU_SECTION?=main,restricted
 MIRROR_DOCKER?=http://mirror.fuel-infra.org/fwm/$(PRODUCT_VERSION)/docker
 MIRROR_DOCKER_BASEURL:=$(MIRROR_DOCKER)
 # MIRROR_FUEL option is valid only for 'fuel' YUM_REPOS section
@@ -291,3 +323,9 @@ DOCKER_PREBUILT_SOURCE?=http://srv11-msk.msk.mirantis.net/docker-test/fuel-image
 
 # Production variable (prod, dev, docker)
 PRODUCTION?=docker
+
+SANDBOX_MIRROR_CENTOS_UPSTREAM?=http://mirrors-local-msk.msk.mirantis.net/centos-$(PRODUCT_VERSION)/$(CENTOS_RELEASE)
+SANDBOX_MIRROR_CENTOS_UPSTREAM_OS_BASEURL:=$(SANDBOX_MIRROR_CENTOS_UPSTREAM)/os/$(CENTOS_ARCH)/
+SANDBOX_MIRROR_CENTOS_UPDATES_OS_BASEURL:=$(SANDBOX_MIRROR_CENTOS_UPSTREAM)/updates/$(CENTOS_ARCH)/
+SANDBOX_MIRROR_EPEL?=http://mirror.yandex.ru/epel/
+SANDBOX_MIRROR_EPEL_OS_BASEURL:=$(SANDBOX_MIRROR_EPEL)/$(CENTOS_MAJOR)/$(CENTOS_ARCH)/

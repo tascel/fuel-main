@@ -154,9 +154,9 @@ if [ "$format_confirmed" != "yes" ] ; then
   chvt 1
 fi
 
-# verify tgtdrive is at least 30GB
+# verify tgtdrive is at least 41GB
 tgtdrivesize=$(( $(cat "/sys/class/block/${tgtdrive}/size") / 2 / 1024 ))
-if [ $tgtdrivesize -lt 30720 ]; then
+if [ $tgtdrivesize -lt 41984 ]; then
     exec < /dev/tty3 > /dev/tty3 2>&1
     chvt 3
     clear
@@ -164,7 +164,7 @@ if [ $tgtdrivesize -lt 30720 ]; then
     echo '********************************************************************'
     echo '*                            E R R O R                             *'
     echo '*                                                                  *'
-    echo '*  Your disk is under 30GB in size. Installation cannot continue.  *'
+    echo '*  Your disk is under 41GB in size. Installation cannot continue.  *'
     echo '*             Restart installation with a larger disk.             *'
     echo '*                                                                  *'
     echo '********************************************************************'
@@ -208,12 +208,13 @@ else
 fi
 echo > /tmp/partition.ks
 echo "partition /boot --onpart=/dev/${bootdev}3" >> /tmp/partition.ks
-echo "partition pv.001 --ondisk=${tgtdrive} --size=30000 --grow" >> /tmp/partition.ks
+echo "partition pv.001 --ondisk=${tgtdrive} --size=41000 --grow" >> /tmp/partition.ks
 echo "volgroup os pv.001" >> /tmp/partition.ks
 echo "logvol swap --vgname=os --recommended --name=swap" >> /tmp/partition.ks
 echo "logvol / --vgname=os --size=10000 --name=root --fstype=ext4" >> /tmp/partition.ks
-echo "logvol /var --vgname=os --size=10000 --percent 60 --grow --name=var --fstype=ext4" >> /tmp/partition.ks
-echo "logvol /var/log --vgname=os --size=4096 --percent 40 --grow --name=varlog --fstype=ext4" >> /tmp/partition.ks
+echo "logvol /var --vgname=os --size=10000 --percent 30 --grow --name=var --fstype=ext4" >> /tmp/partition.ks
+echo "logvol /var/lib/docker --vgname=os --size=17000  --percent 20 --grow --name=varlibdocker --fstype=ext4" >> /tmp/partition.ks
+echo "logvol /var/log --vgname=os --size=4096 --percent 50 --grow --name=varlog --fstype=ext4" >> /tmp/partition.ks
 
 
 # bootloader
@@ -237,6 +238,9 @@ echo "cat /tmp/grub.script | chroot /mnt/sysimage /sbin/grub --no-floppy --batch
 
 %packages --nobase --excludedocs
 @Core
+fuel-release
+fuel-library
+fuel-dockerctl
 authconfig
 bind-utils
 cronie
@@ -247,6 +251,7 @@ dhcp
 docker-io
 fuel-bootstrap-image
 fuel-target-centos-images
+fuel-package-updates
 fuelmenu
 fuel-docker-images
 gdisk
@@ -275,6 +280,7 @@ vim-enhanced
 virt-what
 wget
 yum
+yum-plugin-priorities
 
 %include /tmp/post_partition.ks
 
@@ -424,23 +430,23 @@ ln -s ${repodir}/ubuntu ${wwwdir}/ubuntu
 # --------------------------
 
 # create folders
-mkdir -p /etc/puppet/${OPENSTACK_VERSION}/manifests/
-mkdir -p /etc/puppet/${OPENSTACK_VERSION}/modules/
-rm -rf /etc/puppet/modules/
+#mkdir -p /etc/puppet/${OPENSTACK_VERSION}/manifests/
+#mkdir -p /etc/puppet/${OPENSTACK_VERSION}/modules/
+#rm -rf /etc/puppet/modules/
 
 # TODO(ikalnitsky): investigate why we need this
-cp ${SOURCE}/puppet-slave.tgz ${wwwdir}/
+#cp ${SOURCE}/puppet-slave.tgz ${wwwdir}/
 
 # place modules and manifests
-tar zxf ${SOURCE}/puppet-slave.tgz -C /etc/puppet/${OPENSTACK_VERSION}/modules
-cp /etc/puppet/${OPENSTACK_VERSION}/modules/osnailyfacter/examples/site.pp /etc/puppet/${OPENSTACK_VERSION}/manifests/site.pp
+#tar zxf ${SOURCE}/puppet-slave.tgz -C /etc/puppet/${OPENSTACK_VERSION}/modules
+#cp /etc/puppet/${OPENSTACK_VERSION}/modules/osnailyfacter/examples/site.pp /etc/puppet/${OPENSTACK_VERSION}/manifests/site.pp
 cp ${SOURCE}/centos-versions.yaml ${SOURCE}/ubuntu-versions.yaml /etc/puppet/${OPENSTACK_VERSION}/manifests/
 
 # make links for backward compatibility
-pushd /etc/puppet
-ln -s ${OPENSTACK_VERSION}/manifests/ /etc/puppet/manifests
-ln -s ${OPENSTACK_VERSION}/modules/ /etc/puppet/modules
-popd
+#pushd /etc/puppet
+#ln -s ${OPENSTACK_VERSION}/manifests/ /etc/puppet/manifests
+#ln -s ${OPENSTACK_VERSION}/modules/ /etc/puppet/modules
+#popd
 
 cp ${SOURCE}/send2syslog.py /bin/send2syslog.py
 mkdir -p /var/lib/hiera

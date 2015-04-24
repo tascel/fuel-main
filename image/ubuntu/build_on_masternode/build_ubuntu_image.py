@@ -134,7 +134,6 @@ def expose_env_params(json_data=None):
     os.environ["UBUNTU_RELEASE"] = json_data.get('codename', 'precise')
     os.environ["UBUNTU_KERNEL_FLAVOR"] = json_data.get('ubuntu_kernel_flavor',
                                                        'lts-trusty')
-    os.environ["TMP_BUILD_DIR"] = json_data.get('tmp_dir', '/tmp')
     os.environ["DST_DIR"] = json_data.get('output', '/tmp/image')
     if 'image_data' in json_data:
         os.environ["SEPARATE_FS_IMAGES"] = " ".join(
@@ -148,19 +147,20 @@ def expose_env_params(json_data=None):
 
     if 'repos' in json_data:
         os.environ["UBUNTU_MIRRORS"] = ",".join([
-            "%s:%s:%s:%s" % (
-                repo['suite'], repo['section'], repo['priority'], repo['uri'])
+            "%s|%s|%s|%s" % (
+                repo['suite'], repo.get('section', ''), repo['priority'], repo['uri'])
             for repo in json_data['repos']])
     else:
         raise Exception("Couldn't find any information about repos")
 
     if 'repos' in json_data:
         os.environ["UBUNTU_BASE_MIRROR"] = ",".join([
-            "%s:%s:%s:%s" % (
-                repo['suite'], repo['section'], repo['priority'], repo['uri'])
+            "%s|%s|%s|%s" % (
+                repo['suite'], repo.get('section', ''), repo['priority'], repo['uri'])
             for repo in json_data['repos'][:1]])
     else:
         raise Exception("Couldn't find any information about repos")
+    #FIXME(agordeev): get rid of hardcoded ubuntu release name
     if os.environ['UBUNTU_RELEASE'] == 'trusty':
         os.environ["INSTALL_PACKAGES"] = " ".join(TRUSTY_PACKAGES)
     if 'packages' in json_data:
